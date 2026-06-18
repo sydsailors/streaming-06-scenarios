@@ -19,7 +19,7 @@ Date: 2026-05
 
 Terminal command to run this file from the root project folder:
 
-    uv run python -m streaming.kafka_consumer_sailorsp5
+    uv run python -m streaming.kafka_consumer_sailors
 """
 
 # === DECLARE IMPORTS ===
@@ -81,9 +81,9 @@ ROOT_DIR: Final[Path] = Path.cwd()
 DATA_DIR: Final[Path] = ROOT_DIR / "data"
 OUTPUT_DIR: Final[Path] = DATA_DIR / "output"
 
-OUTPUT_CSV: Final[Path] = OUTPUT_DIR / "consumed_sales_sailorsp5.csv"
-OUTPUT_DB: Final[Path] = OUTPUT_DIR / "sales_sailorsp5.duckdb"
-OUTPUT_CHART: Final[Path] = OUTPUT_DIR / "sales_chart_sailorsp5.png"
+OUTPUT_CSV: Final[Path] = OUTPUT_DIR / "consumed_sales_sailors.csv"
+OUTPUT_DB: Final[Path] = OUTPUT_DIR / "sales_sailors.duckdb"
+OUTPUT_CHART: Final[Path] = OUTPUT_DIR / "sales_chart_sailors.png"
 
 REGIONS_CSV: Final[Path] = DATA_DIR / "regions.csv"
 PRODUCTS_CSV: Final[Path] = DATA_DIR / "products.csv"

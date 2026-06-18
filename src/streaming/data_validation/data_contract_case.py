@@ -137,8 +137,6 @@ CONSUMED_FIELDNAMES: Final[list[str]] = [
     "_kafka_key",
     "_kafka_partition",
     "_kafka_offset",
-    "discount_amount",
-    "price_after_discount",
 ]
 
 REJECTED_SALES_FIELDNAMES: Final[list[str]] = [
