@@ -14,7 +14,7 @@ We add total_price, tax_amount, and total as derived fields in this example.
 The producer sends raw measurements only.
 The consumer is responsible for all derived calculations.
 
-Author: Denise Case
+Author: Sydney Sailors
 Date: 2026-05
 
 OBS:
@@ -84,36 +84,38 @@ def enrich_message(
     row: dict[str, Any],
     region_lookup: dict[str, float],
 ) -> dict[str, Any]:
-    """Add all derived fields to a raw message row.
+    """Add derived fields to a validated sales message.
 
-    Computes total_price and tax_amount from the raw message fields
-    and the region lookup table.
+    Computes subtotal, discount_amount, price_after_discount,
+    tax_amount, and total using raw message fields and region tax rates.
 
-    As you add more derived fields,
-    extend this function to provide them as well.
-
-    Arguments:
-        row: A validated raw message row.
-        region_lookup: A dict mapping region_id to tax_rate_pct.
+    Args:
+        row: Validated raw message from Kafka.
+        region_lookup: Mapping of region_id to tax_rate_pct.
 
     Returns:
-        A new dict containing all original fields plus derived fields.
+        The original message dictionary with derived fields added.
     """
     quantity = int(row.get("quantity", 0))
     unit_price = float(row.get("unit_price", 0.0))
+    discount_pct = float(row.get("discount_pct", 0.0))
     region_id = str(row.get("region_id", ""))
 
-    tax_rate = get_tax_rate(region_id, region_lookup)
-    total_price = compute_total_price(quantity, unit_price)
-    tax_amount = compute_tax_amount(total_price, tax_rate)
+    subtotal = quantity * unit_price
+    discount_amount = subtotal * discount_pct
+    price_after_discount = subtotal - discount_amount
 
-    total = round(total_price + tax_amount, 2)
-    return {
-        **row,
-        "subtotal": total_price,
-        "tax_amount": tax_amount,
-        "total": total,
-    }
+    tax_rate = get_tax_rate(region_id, region_lookup)
+    tax_amount = compute_tax_amount(price_after_discount, tax_rate)
+    total = round(price_after_discount + tax_amount, 2)
+
+    row["subtotal"] = round(subtotal, 2)
+    row["discount_amount"] = round(discount_amount, 2)
+    row["price_after_discount"] = round(price_after_discount, 2)
+    row["tax_amount"] = round(tax_amount, 2)
+    row["total"] = total
+
+    return row
 
 
 def get_tax_rate(region_id: str, region_lookup: dict[str, float]) -> float:
