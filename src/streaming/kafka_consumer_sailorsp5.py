@@ -1,4 +1,4 @@
-"""src/streaming/kafka_consumer_sailors.py.
+"""src/streaming/kafka_consumer_sailorsp5.py.
 
 Kafka consumer: full pipeline example.
 
@@ -19,7 +19,7 @@ Date: 2026-05
 
 Terminal command to run this file from the root project folder:
 
-    uv run python -m streaming.kafka_consumer_sailors
+    uv run python -m streaming.kafka_consumer_sailorsp5
 """
 
 # === DECLARE IMPORTS ===
