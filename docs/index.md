@@ -105,8 +105,8 @@ The DuckDB output enabled direct querying of enriched streaming results.
 
 ### Interpretation
 
-The Kafka pipeline showed how data flows continuously from producer to consumer,
-where each message is validated, enriched, stored, and visualized in real time.
+The Kafka pipeline showed how data flows continuously from producer to consumer.
+Each message is validated, enriched, stored, and visualized in real time.
 
 Observing Kafka messages made the data pipeline easier to understand, which shows how
 raw sales events become structured records through each stage.
