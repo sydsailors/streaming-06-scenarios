@@ -53,7 +53,7 @@ from streaming.data_validation.data_contract_case import (
     validate_required_fields,
 )
 from streaming.storage.storage_case import init_db, write_valid_record
-from streaming.visualizations.live_visualizations_case import (
+from streaming.visualizations.live_visualizations_sailorsp5 import (
     close_live_chart,
     init_live_chart,
     save_live_chart,
@@ -81,9 +81,9 @@ ROOT_DIR: Final[Path] = Path.cwd()
 DATA_DIR: Final[Path] = ROOT_DIR / "data"
 OUTPUT_DIR: Final[Path] = DATA_DIR / "output"
 
-OUTPUT_CSV: Final[Path] = OUTPUT_DIR / "consumed_sales_sailors.csv"
-OUTPUT_DB: Final[Path] = OUTPUT_DIR / "sales_sailors.duckdb"
-OUTPUT_CHART: Final[Path] = OUTPUT_DIR / "sales_chart_sailors.png"
+OUTPUT_CSV: Final[Path] = OUTPUT_DIR / "consumed_sales_sailorsp5.csv"
+OUTPUT_DB: Final[Path] = OUTPUT_DIR / "sales_sailorsp5.duckdb"
+OUTPUT_CHART: Final[Path] = OUTPUT_DIR / "sales_chart_sailorsp5.png"
 
 REGIONS_CSV: Final[Path] = DATA_DIR / "regions.csv"
 PRODUCTS_CSV: Final[Path] = DATA_DIR / "products.csv"

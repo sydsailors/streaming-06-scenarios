@@ -41,42 +41,31 @@ __all__ = [
 
 
 def init_live_chart() -> tuple[Any, Any, list[int], list[float]]:
-    """Create and show an empty live chart.
+    """Initialize and display a live Matplotlib chart for streaming sales data.
 
     Returns:
-        A tuple of (figure, axis, x_values, y_values).
+        A tuple containing:
+        - figure: Matplotlib figure object
+        - axis: Matplotlib axis object
+        - x_values: list of message offsets
+        - y_values: list of sales totals
     """
-    # Matplotlib has a ion() function built in for "interactive ON" mode,
-    # which allows the chart to update in real time as we modify it.
-    # Call this function to turn on interactive mode.
     plt.ion()
 
-    # Call subplots() to create a figure and axis for the chart.
-    figure, axis = plt.subplots()
+    fig, ax = plt.subplots()
 
-    # Initialize empty lists for x and y values.
-    # These will be updated as messages are consumed.
     x_values: list[int] = []
     y_values: list[float] = []
 
-    # Set the title and axis labels for the chart.
-    axis.set_title("Sales Total by Message")
-    axis.set_xlabel("Message")
-    axis.set_ylabel("Sale Total ($)")
+    ax.set_title("Cumulative Sales Over Time")
+    ax.set_xlabel("Message")
+    ax.set_ylabel("Cumulative Sales ($)")
 
-    # Call the figure.show() method to display the chart window.
-    figure.show()
+    fig.show()
+    fig.canvas.draw()
+    fig.canvas.flush_events()
 
-    # Call the figure.canvas.draw() method to
-    # ensure the chart is rendered and responsive.
-    figure.canvas.draw()
-
-    # Call the figure.canvas.flush_events() method to process any pending GUI events,
-    # which helps the chart window to update properly.
-    figure.canvas.flush_events()
-
-    # Return the figure, axis, and the x and y value lists for later use.
-    return figure, axis, x_values, y_values
+    return fig, ax, x_values, y_values
 
 
 def update_live_chart(
@@ -87,57 +76,35 @@ def update_live_chart(
     y_values: list[float],
     message: dict[str, Any],
 ) -> None:
-    """Update the live chart with one consumed message.
+    """Update the live sales chart with a new Kafka message.
 
-    All arguments after the asterisk (*) must be passed as keyword arguments.
+    Extracts the message offset as the x-axis value and the
+    sales total as the y-axis value, then redraws the chart.
 
-    Arguments:
-        figure: Matplotlib figure.
-        axis: Matplotlib axis.
-        x_values: List of x-axis values already shown.
-        y_values: List of y-axis values already shown.
-        message: One enriched Kafka message dictionary.
-
-    Returns:
-        None.
+    Args:
+        figure: Matplotlib figure object.
+        axis: Matplotlib axis object.
+        x_values: Existing x-axis values (message offsets).
+        y_values: Existing y-axis values (sales totals).
+        message: Enriched Kafka message containing a "total" field.
     """
-    # The message offset is a unique integer
-    # that increments with each message,
-    # so it works great as a simple x-axis value
-    # to show the order of messages.
-    # Create a new x value from the message offset.
-    new_x = int(message["_kafka_offset"])
+    new_x = len(x_values) + 1
     x_values.append(new_x)
 
-    # Create a new y value from the "total" field in the message,
-    # which contains the sale total for that message.
-    new_y = float(message["total"])
-    y_values.append(new_y)
+    last_total = y_values[-1] if y_values else 0
+    new_total = last_total + float(message["total"])
+    y_values.append(new_total)
 
-    # Clear the axis
     axis.clear()
-
-    # Re-plot the updated x and y values as a line chart with markers.
-    # Set the marker to "o" to show points at each message.
-    # Options include "o" for circles, "s" for squares, "^" for triangles, and more.
     axis.plot(x_values, y_values, marker="o")
 
-    # Set the title and axis labels again after clearing the axis.
-    axis.set_title("Sales Total by Message")
+    axis.set_title("Cumulative Sales Over Time")
     axis.set_xlabel("Message")
-    axis.set_ylabel("Sale Total ($)")
-
-    # Add a grid to the chart for better readability.
+    axis.set_ylabel("Cumulative Sales ($)")
     axis.grid(True)
 
-    # Call the figure.canvas.draw() method to update the chart with the new data.
     figure.canvas.draw()
-
-    # Call the figure.canvas.flush_events() method to process any pending GUI events,
-    # which helps the chart to update properly.
     figure.canvas.flush_events()
-
-    # Call plt.pause() with a short time (e.g., 0.05 seconds) to allow the chart to update.
     plt.pause(0.05)
 
 
